@@ -1,5 +1,5 @@
 """
-Provide generators for lookup tables:
+Provide generators for look-up tables:
 - 'slice' objects for CogAlg comparisons.
 - Coefficients (weights) for CogAlg comparison
 """
@@ -82,13 +82,13 @@ class GenCoeffs(MTLookupTable):
 
     imports = {"import numpy as np\n"}
     rim_slices = [
-        [  # For flattening outer rim of first two dimensions an ndarray:
+        [  # For flattening outer rim of first two dimensions of ndarray:
             (..., 0, slice(None, -1)), # first row
             (..., slice(None, -1), -1), # last column
             (..., -1, slice(-1, 0, -1)), # last row
             (..., slice(-1, 0, -1), 0), # first column
         ],
-        [  # For flattening outer rim of last two dimensions an ndarray:
+        [  # For flattening outer rim of last two dimensions of ndarray:
             (0, slice(None, -1), ...),
             (slice(None, -1), -1, ...),
             (-1, slice(-1, 0, -1), ...),
