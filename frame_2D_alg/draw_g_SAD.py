@@ -95,11 +95,8 @@ OUTPUT_PATH = "./images/g_SAD_x/"
 def comp_pixel_m(image):  # current version of 2x2 pixel cross-correlation within image
 
     # following four slices provide inputs to a sliding 2x2 kernel:
-    topleft__ = image[:-1, :-1]
-    topright__ = image[:-1, 1:]
-    botleft__ = image[1:, :-1]
-    botright__ = image[1:, 1:]
-
+    topleft__,topright__,botleft__,botright__ = image[:-1, :-1],image[:-1, 1:],image[1:, :-1],image[1:, 1:]
+    
     dy__ = ((botleft__ + botright__) - (topleft__ + topright__))  # same as diagonal from left
     dx__ = ((topright__ + botright__) - (topleft__ + botleft__))  # same as diagonal from right
     g__ = np.hypot(dy__, dx__)  # gradient per kernel
@@ -111,7 +108,6 @@ def comp_pixel_m(image):  # current version of 2x2 pixel cross-correlation withi
     idx__ = np.zeros((topleft__.shape[0], topleft__.shape[1]))
 
     return ((topleft__, idy__, idx__, g__, dy__, dx__, m__))
-
 
 
 def shift_img(img,rng):
@@ -127,14 +123,12 @@ def shift_img(img,rng):
 
     # initialization
     img_shift_ = []
-    x = -rng
-    y = -rng
+    x,y = -rng,-rng
     sstep = 1
     # sstep = rng+1 # skip version
 
     # get shifted images if output size >0
     if output_size_y>0 and output_size_x>0:
-
 
         img_center__ = img[rng:-(rng):sstep,rng:-(rng):sstep]
         # img_center__ = img[rng:-(rng):rng+1,rng:-(rng):rng+1] # skip version
@@ -169,11 +163,11 @@ def shift_img(img,rng):
             # update x and y shifting value
             if x == -rng and y>-rng:
                 y-=1
-            elif x < rng and y < rng:
+            elif x < rng and y<rng:
                 x+=1
-            elif x >= rng and y < rng:
+            elif x >= rng and y<rng:
                 y+=1
-            elif y >= rng and x >-rng:
+            elif y >= rng and x>-rng:
                 x-=1
 
             img_shift_.append(img_shift)
@@ -192,9 +186,7 @@ def comp_rng(dert__, ave, root_fia, rng, mask__=None):
     rim derts as kernel-central derts in following comparison kernels.
     Skipping forms increasingly sparse output dert__ for greater-range cross-comp, hence
     rng (distance between centers of compared derts) increases as 2^n, with n starting at 0:
-    rng = 1: 3x3 kernel,
-    rng = 2: 5x5 kernel,
-    rng = 4: 9x9 kernel,
+    rng = 1: 3x3 kernel,rng = 2: 5x5 kernel,rng = 4: 9x9 kernel
     ...
     Due to skipping, configuration of input derts in next-rng kernel will always be 3x3, see:
     https://github.com/boris-kz/CogAlg/blob/master/frame_2D_alg/Illustrations/intra_comp_diagrams.png
@@ -298,8 +290,7 @@ def comp_rng(dert__, ave, root_fia, rng, mask__=None):
 
 
 def draw_g(img_out, g_):
-    endy = min(img_out.shape[0], g_.shape[0])
-    endx = min(img_out.shape[1], g_.shape[1])
+    endy = min(img_out.shape[0], g_.shape[0]),endx = min(img_out.shape[1], g_.shape[1])
     img_out[:endy, :endx] = (g_[:endy, :endx] * 255) / g_.max()  # scale to max=255, less than max / 255 is 0
 
     return img_out
