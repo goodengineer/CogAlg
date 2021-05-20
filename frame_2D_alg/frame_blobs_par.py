@@ -99,11 +99,8 @@ class CBlob(ClusterStructure):
 def comp_pixel(image):  # 2x2 pixel cross-correlation within image, as in edge detection operators
 
     # input slices into sliding 2x2 kernel, each slice is a shifted 2D frame of grey-scale pixels:
-    topleft__ = image[:-1, :-1]
-    topright__ = image[:-1, 1:]
-    bottomleft__ = image[1:, :-1]
-    bottomright__ = image[1:, 1:]
-
+    topleft__,topright__,bottomleft__,bottomright__ = image[:-1, :-1],image[:-1, 1:],image[1:, :-1],image[1:, 1:]
+   
     Gy__ = ((bottomleft__ + bottomright__) - (topleft__ + topright__))  # same as decomposition of two diagonal differences into Gy
     Gx__ = ((topright__ + bottomright__) - (topleft__ + bottomleft__))  # same as decomposition of two diagonal differences into Gx
 
