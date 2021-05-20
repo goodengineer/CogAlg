@@ -42,8 +42,7 @@ from class_cluster import ClusterStructure, NoneType
 
 ave = 30  # filter or hyper-parameter, set as a guess, latter adjusted by feedback
 aveB = 50
-ave_M = 100
-ave_mP = 100
+ave_M,ave_mP = 100,100
 UNFILLED = -1
 EXCLUDED_ID = -2
 
@@ -155,11 +154,8 @@ def comp_pixel(image):  # 2x2 pixel cross-correlation within image, a standard e
     # see comp_pixel_versions file for other versions and more explanation
 
     # input slices into sliding 2x2 kernel, each slice is a shifted 2D frame of grey-scale pixels:
-    topleft__ = image[:-1, :-1]
-    topright__ = image[:-1, 1:]
-    bottomleft__ = image[1:, :-1]
-    bottomright__ = image[1:, 1:]
-
+    topleft__, topright__,bottomleft__,bottomright__ = image[:-1, :-1],image[:-1, 1:],image[1:, :-1],image[1:, 1:]
+   
     rot_Gy__ = bottomright__ - topleft__  # rotated to bottom__ - top__
     rot_Gx__ = topright__ - bottomleft__  # rotated to right__ - left__
 
@@ -408,8 +404,7 @@ if __name__ == "__main__":
             +G "edge" blobs are low-match, valuable only as contrast: to the extent that their negative value cancels 
             positive value of adjacent -G "flat" blobs.
             '''
-            G = blob.G
-            M = blob.M
+            G,M = blob.G,blob.M
             blob.root_dert__=root_dert__
             blob.prior_forks=['g']  # not sure about this
             blob_height = blob.box[1] - blob.box[0]
@@ -417,15 +412,12 @@ if __name__ == "__main__":
 
             if blob.sign:  # +G on first fork
                 if G > aveB and blob_height > 3 and blob_width  > 3:  # min blob dimensions
-                    blob.rdn = 1
-                    blob.f_comp_a = 1
+                    blob.rdn,blob.f_comp_a = 1,1
                     deep_layers[i] = intra_blob(blob, render=args.render, verbose=args.verbose)
                     # dert__ comp_a in 2x2 kernels
 
             elif M > aveB and blob_height > 3 and blob_width  > 3:  # min blob dimensions
-                blob.rdn = 1
-                blob.rng = 1
-                blob.f_root_a = 0
+                blob.rdn,blob.rng,blob.f_root_a = 1,1,0
                 deep_layers[i] = intra_blob(blob, render=args.render, verbose=args.verbose)
                 # dert__ comp_r in 3x3 kernels
 
